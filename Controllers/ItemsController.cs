@@ -15,6 +15,8 @@ namespace InventrySystemAPI.Controllers
         {
             MyDbContext = dbContext;
         }
+
+
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
@@ -40,10 +42,7 @@ namespace InventrySystemAPI.Controllers
             return Ok(singlecatogory);
         }
 
-
-
         [HttpPost]
-        //[Route("{}")]
         public async Task<IActionResult> AddItem(AddItemsRequest addItem)
         {
             var item = new Items()
@@ -58,8 +57,9 @@ namespace InventrySystemAPI.Controllers
             await MyDbContext.SaveChangesAsync();
             return Ok(item);
         }
-        [HttpPut]
+     
         
+        [HttpPatch]
         public async Task<IActionResult> UpdateQuantity([FromBody] List<UpdateQuantityRequest> updateQuantityRequest)
         {
             //List<UpdateQuantityRequest> quantitiesList = JsonConvert.DeserializeObject<List<UpdateQuantityRequest>>(updateQuantityRequest);
@@ -80,24 +80,34 @@ namespace InventrySystemAPI.Controllers
             return Ok(updateQuantityRequest);
         }
 
+
+        [HttpGet]
+        [Route("Bills")]
+        public async Task<IActionResult> GetBills()
+        {
+            var singlecatogory = MyDbContext.Bills.ToList();
+            if (singlecatogory == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(singlecatogory);
+        }
+
+
         [HttpPost]
         [Route("add_bill")]
         public async Task<IActionResult> AddBills([FromBody] AddBills addBills)
         {
-
-
             var singlebill = new Bills()
             {
                 Id = Guid.NewGuid(),
                 CustomerName = addBills.CustomerName,
                 totalamount = addBills.totalamount
-
-
             };
             await MyDbContext.Bills.AddAsync(singlebill);
             await MyDbContext.SaveChangesAsync();
             return Ok(singlebill);
         }
-
     }
 }
