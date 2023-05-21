@@ -1,6 +1,7 @@
 ﻿using InventrySystemAPI.Data;
 using InventrySystemAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace InventrySystemAPI.Controllers
@@ -20,7 +21,7 @@ namespace InventrySystemAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
-            var singlecatogory = MyDbContext.Items.ToList();
+            var singlecatogory =await MyDbContext.Items.ToListAsync();
             if (singlecatogory == null)
             {
                 return NotFound();
@@ -72,8 +73,6 @@ namespace InventrySystemAPI.Controllers
                     singlecatogory.ItemsQuantity = singlecatogory.ItemsQuantity - item.ItemsQuantity;
 
                 }
-
-
             }
 
             await MyDbContext.SaveChangesAsync();
@@ -81,33 +80,6 @@ namespace InventrySystemAPI.Controllers
         }
 
 
-        [HttpGet]
-        [Route("Bills")]
-        public async Task<IActionResult> GetBills()
-        {
-            var singlecatogory = MyDbContext.Bills.ToList();
-            if (singlecatogory == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(singlecatogory);
-        }
-
-
-        [HttpPost]
-        [Route("add_bill")]
-        public async Task<IActionResult> AddBills([FromBody] AddBills addBills)
-        {
-            var singlebill = new Bills()
-            {
-                Id = Guid.NewGuid(),
-                CustomerName = addBills.CustomerName,
-                totalamount = addBills.totalamount
-            };
-            await MyDbContext.Bills.AddAsync(singlebill);
-            await MyDbContext.SaveChangesAsync();
-            return Ok(singlebill);
-        }
+        
     }
 }
